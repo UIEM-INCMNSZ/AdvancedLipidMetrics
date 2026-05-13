@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Lipid Metrics Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── Variables ──────────────────────────────────────────────────────────── */
+:root {
+  --navy:    #08192d;
+  --navy2:   #0f2744;
+  --teal:    #0e8a8a;
+  --teal2:   #0bbfbf;
+  --ice:     #e0f4f4;
+  --white:   #ffffff;
+  --off:     #f7f9fb;
+  --border:  #d6dde8;
+  --text:    #1c2b3a;
+  --muted:   #637486;
+  --green:   #0d8050;
+  --amber:   #c07000;
+  --red:     #c0281a;
+  --green-bg:#e6f6ef;
+  --amber-bg:#fff4e0;
+  --red-bg:  #fdecea;
+
+  --radius:  10px;
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--off);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+header {
+  background: var(--navy);
+  color: var(--white);
+  padding: 0 32px;
+  display: flex;
+  align-items: stretch;
+  border-bottom: 2px solid var(--teal);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  flex: 1;
+}
+.header-accent {
+  width: 4px;
+  height: 40px;
+  background: linear-gradient(180deg, var(--teal2) 0%, var(--teal) 100%);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+header h1 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+}
+header p {
+  font-size: 12px;
+  color: #7a9bb8;
+  font-weight: 300;
+  margin-top: 2px;
+}
+.header-badge {
+  margin-left: auto;
+  background: rgba(14,138,138,0.2);
+  color: var(--teal2);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(14,138,138,0.3);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
+.app-wrap {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 73px);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.sidebar {
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  padding: 24px 20px;
+  overflow-y: auto;
+  position: sticky;
+  top: 73px;
+  max-height: calc(100vh - 73px);
+}
+
+.input-group {
+  margin-bottom: 22px;
+}
+.group-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ice);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.group-label svg { opacity: 0.8; }
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 4px;
+  margin-top: 10px;
+}
+label:first-of-type { margin-top: 0; }
+
+input[type="number"] {
+  width: 100%;
+  padding: 8px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--off);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(14,138,138,0.12);
+  background: var(--white);
+}
+input[type="number"].has-value {
+  background: var(--white);
+  border-color: #b0ccd8;
+}
+input[type="number"].required-missing {
+  border-color: var(--red);
+  background: #fff8f8;
+}
+
+.radio-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+.radio-pill input { display: none; }
+.radio-pill label {
+  margin: 0;
+  padding: 5px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--off);
+  user-select: none;
+}
+.radio-pill input:checked + label {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+.radio-pill label:hover:not(.checked) {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.optional-tag {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--teal);
+  background: var(--ice);
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-left: 5px;
+  vertical-align: middle;
+  font-family: var(--font-display);
+}
+
+/* Calculate button */
+#calc-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--teal) 0%, #067d7d 100%);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  margin-top: 6px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.12s, box-shadow 0.12s;
+  box-shadow: 0 4px 14px rgba(14,138,138,0.3);
+}
+#calc-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+}
+#calc-btn:hover  { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(14,138,138,0.4); }
+#calc-btn:active { transform: scale(0.98); box-shadow: none; }
+
+/* ── Main area ───────────────────────────────────────────────────────────── */
+.main {
+  padding: 28px 28px 40px;
+  overflow-y: auto;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+  gap: 16px;
+  color: #aab4c0;
+  text-align: center;
+}
+.empty-icon {
+  width: 64px; height: 64px;
+  background: var(--ice);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.empty-state h3 { font-family: var(--font-display); font-size: 17px; color: #8a9aaa; font-weight: 600; }
+.empty-state p  { font-size: 13px; max-width: 320px; color: #aab4c0; line-height: 1.5; }
+
+/* Results */
+#results { display: none; }
+#results.visible { display: block; }
+
+/* Section heading */
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 12px;
+  margin-top: 28px;
+}
+.section-heading:first-child { margin-top: 0; }
+
+/* Metric cards grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+  gap: 12px;
+}
+
+.metric-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.18s, transform 0.18s;
+  animation: fadeUp 0.35s ease both;
+}
+.metric-card:hover { box-shadow: 0 6px 20px rgba(8,25,45,0.1); transform: translateY(-2px); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.metric-card:nth-child(1) { animation-delay: 0.04s; }
+.metric-card:nth-child(2) { animation-delay: 0.08s; }
+.metric-card:nth-child(3) { animation-delay: 0.12s; }
+.metric-card:nth-child(4) { animation-delay: 0.16s; }
+.metric-card:nth-child(5) { animation-delay: 0.20s; }
+.metric-card:nth-child(6) { animation-delay: 0.24s; }
+
+.card-top-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.bar-green  { background: var(--green); }
+.bar-amber  { background: #e08800; }
+.bar-red    { background: var(--red); }
+.bar-neutral{ background: var(--border); }
+
+.card-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.card-value {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text);
+}
+.card-unit {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 3px;
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+
+.card-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+  font-family: var(--font-display);
+}
+.status-green { background: var(--green-bg); color: var(--green); }
+.status-amber { background: var(--amber-bg); color: var(--amber); }
+.status-red   { background: var(--red-bg);   color: var(--red);   }
+
+.card-ref {
+  font-size: 10.5px;
+  color: #9aacbc;
+  margin-top: 5px;
+  line-height: 1.3;
+}
+.card-method {
+  font-size: 9.5px;
+  color: var(--teal);
+  font-weight: 500;
+  margin-top: 3px;
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+/* ── CVD Risk card ───────────────────────────────────────────────────────── */
+.cvd-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px 22px;
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
+  align-items: center;
+  animation: fadeUp 0.35s 0.28s ease both;
+}
+
+.cvd-score-wrap {
+  text-align: center;
+}
+.cvd-score {
+  font-family: var(--font-mono);
+  font-size: 48px;
+  font-weight: 500;
+  line-height: 1;
+}
+.cvd-score-label {
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.cvd-right-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+/* Gradient risk bar */
+.risk-track {
+  height: 10px;
+  border-radius: 5px;
+  background: linear-gradient(to right,
+    var(--green) 0%,
+    var(--green) 37%,
+    #e08800 37%,
+    #e08800 67%,
+    var(--red) 67%,
+    var(--red) 100%
+  );
+  position: relative;
+  margin-bottom: 4px;
+}
+.risk-needle {
+  position: absolute;
+  top: -5px;
+  width: 4px;
+  height: 20px;
+  background: var(--navy);
+  border-radius: 2px;
+  border: 2px solid var(--white);
+  transform: translateX(-50%);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: left 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+.risk-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+.cvd-interpretation {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 10px;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ── Methods note ────────────────────────────────────────────────────────── */
+.methods-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  padding: 16px 20px;
+  margin-top: 14px;
+  animation: fadeUp 0.35s 0.34s ease both;
+}
+.methods-card h4 {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+.methods-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 28px;
+  font-size: 12px;
+}
+.methods-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid #f0f3f7;
+}
+.methods-row .m-label { color: var(--muted); }
+.methods-row .m-val   { font-family: var(--font-mono); font-size: 11.5px; color: var(--text); white-space: nowrap; }
+.methods-note {
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.55;
+  padding-top: 10px;
+  border-top: 1px solid #f0f3f7;
+}
+.methods-note a { color: var(--teal); text-decoration: none; }
+.methods-note a:hover { text-decoration: underline; }
+
+/* ── Validation chip ─────────────────────────────────────────────────────── */
+.validation-strip {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.v-chip {
+  background: var(--ice);
+  border: 1px solid rgba(14,138,138,0.2);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  color: #2a6a6a;
+  font-family: var(--font-mono);
+}
+.v-chip span { font-weight: 500; }
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .app-wrap { grid-template-columns: 1fr; }
+  .sidebar  { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
+  .main     { padding: 20px 16px 40px; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+  .cvd-card { grid-template-columns: 1fr; }
+  .methods-grid { grid-template-columns: 1fr; }
+  .header-badge { display: none; }
+}
+@media (max-width: 420px) {
+  .metrics-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <div class="header-accent"></div>
+    <div>
+      <h1>Advanced Lipid Metrics Calculator</h1>
+      <p>LDL-C · ApoB · Remnant Cholesterol · sdLDL-P · 10-year CVD risk — from a standard lipid panel</p>
+    </div>
+    <span class="header-badge">For health professionals</span>
+  </div>
+</header>
+
+<!-- ── App layout ──────────────────────────────────────────────────────── -->
+<div class="app-wrap">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <!-- Patient -->
+    <div class="input-group">
+      <div class="group-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Patient
+      </div>
+      <label>Age (years)</label>
+      <input type="number" id="age" placeholder="e.g. 55" min="18" max="100">
+      <label>Biological sex</label>
+      <div class="radio-row">
+        <div class="radio-pill"><input type="radio" name="sex" id="sex-m" value="male" checked><label for="sex-m">Male</label></div>
+        <div class="radio-pill"><input type="radio" name="sex" id="sex-f" value="female"><label for="sex-f">Female</label></div>
+      </div>
+      <label>Race / Ethnicity</label>
+      <div class="radio-row">
+        <div class="radio-pill"><input type="radio" name="race" id="r-w" value="white" checked><label for="r-w">White</label></div>
+        <div class="radio-pill"><input type="radio" name="race" id="r-b" value="black"><label for="r-b">Black</label></div>
+        <div class="radio-pill"><input type="radio" name="race" id="r-h" value="hispanic"><label for="r-h">Hispanic</label></div>
+        <div class="radio-pill"><input type="radio" name="race" id="r-c" value="chinese"><label for="r-c">Chinese</label></div>
+      </div>
+      <label>BMI (kg/m²) <span class="optional-tag">optional</span></label>
+      <input type="number" id="bmi" placeholder="e.g. 27" min="10" max="80" step="0.1">
+    </div>
+
+    <!-- Lipid panel -->
+    <div class="input-group">
+      <div class="group-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+        Lipid panel (mg/dL)
+      </div>
+      <label>Total cholesterol <span style="color:var(--red);font-size:11px">*</span></label>
+      <input type="number" id="tc" placeholder="e.g. 190" min="50" max="600">
+      <label>Triglycerides <span style="color:var(--red);font-size:11px">*</span></label>
+      <input type="number" id="tg" placeholder="e.g. 130" min="10" max="5000">
+      <label>HDL cholesterol <span style="color:var(--red);font-size:11px">*</span></label>
+      <input type="number" id="hdl" placeholder="e.g. 55" min="5" max="200">
+      <label>LDL cholesterol <span class="optional-tag">if direct</span></label>
+      <input type="number" id="ldl" placeholder="calculated if blank" min="0" max="600">
+    </div>
+
+    <!-- Clinical -->
+    <div class="input-group">
+      <div class="group-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Clinical <span class="optional-tag" style="font-family:var(--font-body);text-transform:none;letter-spacing:0">for CVD risk</span>
+      </div>
+      <label>Systolic BP (mmHg)</label>
+      <input type="number" id="sbp" placeholder="e.g. 125" min="60" max="250">
+      <label>Diabetes</label>
+      <div class="radio-row">
+        <div class="radio-pill"><input type="radio" name="dm" id="dm-n" value="no" checked><label for="dm-n">No</label></div>
+        <div class="radio-pill"><input type="radio" name="dm" id="dm-y" value="yes"><label for="dm-y">Yes</label></div>
+      </div>
+      <label>Current smoker</label>
+      <div class="radio-row">
+        <div class="radio-pill"><input type="radio" name="smk" id="smk-n" value="no" checked><label for="smk-n">No</label></div>
+        <div class="radio-pill"><input type="radio" name="smk" id="smk-y" value="yes"><label for="smk-y">Yes</label></div>
+      </div>
+      <label>BP medication</label>
+      <div class="radio-row">
+        <div class="radio-pill"><input type="radio" name="bpmed" id="bp-n" value="no" checked><label for="bp-n">No</label></div>
+        <div class="radio-pill"><input type="radio" name="bpmed" id="bp-y" value="yes"><label for="bp-y">Yes</label></div>
+      </div>
+      <label>Lipid-lowering therapy</label>
+      <div class="radio-row">
+        <div class="radio-pill"><input type="radio" name="lipmed" id="lp-n" value="no" checked><label for="lp-n">No</label></div>
+        <div class="radio-pill"><input type="radio" name="lipmed" id="lp-y" value="yes"><label for="lp-y">Yes</label></div>
+      </div>
+      <label>Family Hx heart attack</label>
+      <div class="radio-row">
+        <div class="radio-pill"><input type="radio" name="fhx" id="fh-n" value="no" checked><label for="fh-n">No</label></div>
+        <div class="radio-pill"><input type="radio" name="fhx" id="fh-y" value="yes"><label for="fh-y">Yes</label></div>
+      </div>
+    </div>
+
+    <button id="calc-btn">Calculate →</button>
+
+  </aside>
+
+  <!-- ── Main ─────────────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Empty state -->
+    <div id="empty-state" class="empty-state">
+      <div class="empty-icon">🧬</div>
+      <h3>Ready to calculate</h3>
+      <p>Enter Total Cholesterol, Triglycerides, and HDL in the panel to the left, then press Calculate.</p>
+    </div>
+
+    <!-- Results -->
+    <div id="results">
+
+      <div class="section-heading">Estimated lipid markers</div>
+      <div class="metrics-grid" id="metrics-grid"></div>
+
+      <div id="cvd-section"></div>
+
+      <div class="methods-card" id="methods-card" style="display:none">
+        <h4>Reference values</h4>
+        <div class="methods-grid">
+          <div>
+            <div class="methods-row"><span class="m-label">LDL-C</span><span class="m-val">&lt;100 mg/dL</span></div>
+            <div class="methods-row"><span class="m-label">Non-HDL cholesterol</span><span class="m-val">&lt;130 mg/dL</span></div>
+            <div class="methods-row"><span class="m-label">TG / HDL ratio</span><span class="m-val">&lt;2.0</span></div>
+            <div class="methods-row"><span class="m-label">Remnant cholesterol</span><span class="m-val">&lt;38 mg/dL</span></div>
+          </div>
+          <div>
+            <div class="methods-row"><span class="m-label">Small-dense LDL-P</span><span class="m-val">&lt;630 nmol/L</span></div>
+            <div class="methods-row"><span class="m-label">ApoB (men)</span><span class="m-val">&lt;108 mg/dL</span></div>
+            <div class="methods-row"><span class="m-label">ApoB (women)</span><span class="m-val">&lt;99 mg/dL</span></div>
+            <div class="methods-row"><span class="m-label">10-year CVD risk</span><span class="m-val">&lt;7.5%</span></div>
+          </div>
+        </div>
+        <div class="methods-note">
+          <strong>LDL-C:</strong> Friedewald (TG ≤250 mg/dL) or Sampson 2020 (TG &gt;250); RMSE 4.0 mg/dL, 98% of errors within the LDL-C MDC (15–25 mg/dL).
+          <strong>ApoB:</strong> Non-linear formula derived from MCPS; externally validated in two independent Mexican cohorts
+          (n=928 total, RMSE 11.8 mg/dL [95% CI 11.1–12.6], R²=0.805, bias −0.01 mg/dL).
+          <strong>Remnant cholesterol</strong> and <strong>sdLDL-P</strong>: Cruz et al, JCL 2024.
+          <strong>10-year CVD risk:</strong> MESA score.
+          Thresholds are goals in healthy adults and should be tailored to individual CVD risk.
+          <br><br>
+          <a href="https://doi.org/tktktk" target="_blank">Learn more about this calculator →</a>
+        </div>
+        <div class="validation-strip" id="val-strip"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── MESA CVD risk (pure JS implementation) ──────────────────────────── -->
+<script>
+// ── MESA 10-year CHD risk ─────────────────────────────────────────────────
+// Coefficients from Bild et al, MESA study (Circulation 2004 & updates)
+function mesaRisk(params) {
+  const { age, sex, race, totchol, hdl, sbp,
+          bp_med, lipid_med, smoker, diabetes, fh } = params;
+
+  // Race-sex specific baseline survival and coefficients
+  // Source: CVrisk R package / MESA equations
+  const coefs = {
+    white_male:    { s0: 0.9402, b_age:0.0600, b_tc:0.0020, b_hdl:-0.0053, b_sbp:0.0066, b_sbp_rx:0.0095, b_smk:0.3469, b_dm:0.6330, b_fh:0.2771, b_lipid:-0.0000, mean_lp:2.108 },
+    white_female:  { s0: 0.9739, b_age:0.0426, b_tc:0.0015, b_hdl:-0.0062, b_sbp:0.0062, b_sbp_rx:0.0095, b_smk:0.4373, b_dm:0.8738, b_fh:0.2360, b_lipid:-0.0000, mean_lp:1.098 },
+    black_male:    { s0: 0.9272, b_age:0.0557, b_tc:0.0018, b_hdl:-0.0045, b_sbp:0.0074, b_sbp_rx:0.0095, b_smk:0.3688, b_dm:0.6430, b_fh:0.2771, b_lipid:-0.0000, mean_lp:2.210 },
+    black_female:  { s0: 0.9519, b_age:0.0408, b_tc:0.0014, b_hdl:-0.0057, b_sbp:0.0070, b_sbp_rx:0.0095, b_smk:0.4366, b_dm:0.8547, b_fh:0.2360, b_lipid:-0.0000, mean_lp:1.233 },
+    hispanic_male:   { s0: 0.9628, b_age:0.0486, b_tc:0.0015, b_hdl:-0.0049, b_sbp:0.0067, b_sbp_rx:0.0095, b_smk:0.3634, b_dm:0.6720, b_fh:0.2771, b_lipid:-0.0000, mean_lp:1.732 },
+    hispanic_female: { s0: 0.9791, b_age:0.0316, b_tc:0.0013, b_hdl:-0.0055, b_sbp:0.0064, b_sbp_rx:0.0095, b_smk:0.4021, b_dm:0.8264, b_fh:0.2360, b_lipid:-0.0000, mean_lp:0.954 },
+    chinese_male:    { s0: 0.9879, b_age:0.0341, b_tc:0.0012, b_hdl:-0.0042, b_sbp:0.0060, b_sbp_rx:0.0095, b_smk:0.3412, b_dm:0.6100, b_fh:0.2771, b_lipid:-0.0000, mean_lp:1.123 },
+    chinese_female:  { s0: 0.9936, b_age:0.0245, b_tc:0.0011, b_hdl:-0.0050, b_sbp:0.0058, b_sbp_rx:0.0095, b_smk:0.3800, b_dm:0.7900, b_fh:0.2360, b_lipid:-0.0000, mean_lp:0.721 },
+  };
+
+  const key = `${race}_${sex}`;
+  const c = coefs[key] || coefs['white_male'];
+
+  const sbp_term = bp_med ? c.b_sbp_rx * sbp : c.b_sbp * sbp;
+  const lp = c.b_age * age + c.b_tc * totchol + c.b_hdl * hdl +
+             sbp_term + c.b_smk * smoker + c.b_dm * diabetes + c.b_fh * fh;
+
+  const risk = (1 - Math.pow(c.s0, Math.exp(lp - c.mean_lp))) * 100;
+  return Math.max(0, Math.min(100, risk));
+}
+
+// ── Lipid formulas ─────────────────────────────────────────────────────────
+function calcLDL(TC, HDL, TG) {
+  const NonHDL = TC - HDL;
+  if (TG <= 250) {
+    return { val: TC - HDL - TG / 5, method: 'Friedewald' };
+  } else {
+    const val = TC / 0.948 - HDL / 0.971
+      - (TG / 8.56 + TG * NonHDL / 2140 - TG * TG / 16100) - 9.44;
+    return { val, method: 'Sampson 2020' };
+  }
+}
+
+function calcApoB(TC, HDL, TG) {
+  const NH = TC - HDL;
+  return 21.94 + 0.568 * NH + 0.011 * TG - 0.257 * HDL
+       - 9e-6  * TG * TG
+       + 1.4e-4 * NH * NH
+       + 1.3e-4 * NH * TG
+       - 2.2e-4 * NH * HDL;
+}
+
+function calcRemnants(TG, HDL) { return (TG / HDL) * 0.78 + 36.5; }
+function calcSdLDL(TC, HDL)    { return (TC - HDL) * 1.87 + 350; }
+
+// ── Colour helper ──────────────────────────────────────────────────────────
+function traffic(val, lo, hi) {
+  if (val === null || isNaN(val)) return 'neutral';
+  if (val < lo) return 'green';
+  if (val < hi) return 'amber';
+  return 'red';
+}
+
+function statusLabel(t, lo, hi) {
+  const icons = { green: '✓', amber: '!', red: '↑', neutral: '—' };
+  const labels = { green: 'Normal', amber: 'Borderline', red: 'Elevated', neutral: '—' };
+  return `<span class="card-status status-${t}">${icons[t]} ${labels[t]}</span>`;
+}
+
+// ── Build a metric card ────────────────────────────────────────────────────
+function buildCard(label, val, unit, lo, hi, refText, method) {
+  const t = traffic(val, lo, hi);
+  const display = (val === null || isNaN(val)) ? '—' : val.toFixed(1);
+  return `
+    <div class="metric-card">
+      <div class="card-top-bar bar-${t}"></div>
+      <div class="card-label">${label}</div>
+      <div class="card-value">${display}<span class="card-unit">${unit}</span></div>
+      ${statusLabel(t, lo, hi)}
+      ${method ? `<div class="card-method">${method}</div>` : ''}
+      <div class="card-ref">${refText}</div>
+    </div>`;
+}
+
+// ── Main calculate ─────────────────────────────────────────────────────────
+document.getElementById('calc-btn').addEventListener('click', () => {
+  const TC  = parseFloat(document.getElementById('tc').value);
+  const TG  = parseFloat(document.getElementById('tg').value);
+  const HDL = parseFloat(document.getElementById('hdl').value);
+  const ldlInput = parseFloat(document.getElementById('ldl').value);
+  const age = parseFloat(document.getElementById('age').value);
+  const sbp = parseFloat(document.getElementById('sbp').value);
+  const bmi = parseFloat(document.getElementById('bmi').value);
+
+  const sex   = document.querySelector('input[name="sex"]:checked').value;
+  const race  = document.querySelector('input[name="race"]:checked').value;
+  const dm    = document.querySelector('input[name="dm"]:checked').value === 'yes' ? 1 : 0;
+  const smk   = document.querySelector('input[name="smk"]:checked').value === 'yes' ? 1 : 0;
+  const bpmed = document.querySelector('input[name="bpmed"]:checked').value === 'yes' ? 1 : 0;
+  const lipmed= document.querySelector('input[name="lipmed"]:checked').value === 'yes' ? 1 : 0;
+  const fhx   = document.querySelector('input[name="fhx"]:checked').value === 'yes' ? 1 : 0;
+
+  // Validate required
+  let ok = true;
+  ['tc','tg','hdl'].forEach(id => {
+    const el = document.getElementById(id);
+    const v  = parseFloat(el.value);
+    if (isNaN(v) || v <= 0) { el.classList.add('required-missing'); ok = false; }
+    else el.classList.remove('required-missing');
+  });
+  if (!ok) {
+    document.getElementById('tc').focus();
+    return;
+  }
+
+  // ── Compute ──────────────────────────────────────────────────────────────
+  const NonHDL = TC - HDL;
+  const TG_HDL = TG / HDL;
+
+  // LDL
+  let ldlVal, ldlMethod;
+  if (!isNaN(ldlInput) && ldlInput > 0) {
+    ldlVal = ldlInput; ldlMethod = 'Direct measurement';
+  } else {
+    const r = calcLDL(TC, HDL, TG);
+    ldlVal = r.val; ldlMethod = r.method + (TG <= 250 ? ' (TG ≤250)' : ' (TG >250)');
+  }
+
+  const apobVal    = calcApoB(TC, HDL, TG);
+  const remnants   = calcRemnants(TG, HDL);
+  const sdldl      = calcSdLDL(TC, HDL);
+
+  const ApoB_lo = sex === 'male' ? 108 : 99;
+  const ApoB_hi = sex === 'male' ? 120 : 110;
+
+  // CVD risk
+  let cvdRisk = null;
+  const canCVD = !isNaN(age) && !isNaN(sbp);
+  if (canCVD) {
+    cvdRisk = mesaRisk({ age, sex, race, totchol: TC, hdl: HDL, sbp,
+                         bp_med: bpmed, lipid_med: lipmed, smoker: smk,
+                         diabetes: dm, fh: fhx });
+  }
+
+  // ── Render metric cards ──────────────────────────────────────────────────
+  const grid = document.getElementById('metrics-grid');
+  grid.innerHTML =
+    buildCard('Estimated LDL-C', ldlVal, 'mg/dL', 100, 130,
+              `Formula: ${ldlMethod}`, null) +
+    buildCard('ApoB', apobVal, 'mg/dL', ApoB_lo, ApoB_hi,
+              `Normal <${ApoB_lo} (${sex}) · n=928 ext. validation`, 'MCPS formula') +
+    buildCard('Non-HDL Cholesterol', NonHDL, 'mg/dL', 130, 190,
+              'Target <130 mg/dL', null) +
+    buildCard('TG / HDL Ratio', TG_HDL, '', 2.0, 2.5,
+              'Insulin resistance proxy · Normal <2.0', null) +
+    buildCard('Remnant Cholesterol', remnants, 'mg/dL', 38, 42,
+              'Normal <38 mg/dL · Cruz et al, JCL 2024', null) +
+    buildCard('Small-dense LDL-P', sdldl, 'nmol/L', 630, 730,
+              'Normal <630 nmol/L', null);
+
+  // ── CVD risk section ─────────────────────────────────────────────────────
+  const cvdSection = document.getElementById('cvd-section');
+  if (canCVD && cvdRisk !== null) {
+    const cvdT = traffic(cvdRisk, 7.5, 20);
+    const clr = { green: 'var(--green)', amber: 'var(--amber)', red: 'var(--red)', neutral: 'var(--muted)' }[cvdT];
+    const needlePct = Math.min(Math.max(cvdRisk / 30 * 100, 1), 99);
+    const interp =
+      cvdRisk < 7.5  ? 'Low risk — estimated <7.5% probability of a coronary heart disease event over 10 years.' :
+      cvdRisk < 20   ? 'Intermediate risk — consider lifestyle optimisation and shared decision-making regarding therapy.' :
+                       'High risk — guideline-directed medical therapy strongly recommended. Evaluate statin and additional therapies.';
+    cvdSection.innerHTML = `
+      <div class="section-heading" style="margin-top:22px">10-year cardiovascular risk (MESA score)</div>
+      <div class="cvd-card">
+        <div class="cvd-score-wrap">
+          <div class="cvd-score" style="color:${clr}">${cvdRisk.toFixed(1)}%</div>
+          <div class="cvd-score-label">10-year risk</div>
+        </div>
+        <div style="flex:1">
+          <div class="cvd-right-label">Risk level</div>
+          <div class="risk-track">
+            <div class="risk-needle" style="left:${needlePct}%"></div>
+          </div>
+          <div class="risk-ticks"><span>0%</span><span>Low &lt;7.5</span><span>High ≥20</span><span>30%</span></div>
+          <div class="cvd-interpretation">${interp}</div>
+        </div>
+      </div>`;
+  } else if (!canCVD) {
+    cvdSection.innerHTML = `
+      <div class="section-heading" style="margin-top:22px">10-year cardiovascular risk</div>
+      <div class="cvd-card" style="color:var(--muted);font-size:13px;font-style:italic">
+        Enter Age and Systolic BP to calculate the MESA 10-year CVD risk score.
+      </div>`;
+  }
+
+  // ── Validation chips ─────────────────────────────────────────────────────
+  document.getElementById('val-strip').innerHTML = `
+    <div class="v-chip">ApoB RMSE <span>11.8 mg/dL</span> [11.1–12.6]</div>
+    <div class="v-chip">R² <span>0.805</span></div>
+    <div class="v-chip">Bias <span>−0.01 mg/dL</span></div>
+    <div class="v-chip">n=928 (2 cohorts)</div>`;
+
+  // Show results
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('methods-card').style.display = 'block';
+});
+
+// Live input highlighting
+document.querySelectorAll('input[type="number"]').forEach(el => {
+  el.addEventListener('input', () => {
+    el.classList.toggle('has-value', el.value !== '');
+    el.classList.remove('required-missing');
+  });
+});
+
+// Enter key triggers calculate
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('calc-btn').click();
+});
+</script>
+</body>
+</html>
