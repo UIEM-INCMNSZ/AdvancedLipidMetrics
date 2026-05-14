@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advanced Lipid Metrics Calculator</title>
+<title>Calculadora de Métricas Lipídicas Avanzadas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -83,8 +83,13 @@ header p {
   font-weight: 300;
   margin-top: 2px;
 }
-.header-badge {
+.header-right {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-badge {
   background: rgba(14,138,138,0.2);
   color: var(--teal2);
   font-size: 11px;
@@ -95,6 +100,38 @@ header p {
   white-space: nowrap;
   font-family: var(--font-display);
   letter-spacing: 0.03em;
+}
+
+/* ── Language Toggle ─────────────────────────────────────────────────────── */
+.lang-toggle {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.08);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.lang-btn {
+  padding: 4px 12px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  transition: all 0.18s;
+  border-radius: 18px;
+}
+.lang-btn.active {
+  background: var(--teal);
+  color: var(--white);
+  box-shadow: 0 1px 6px rgba(14,138,138,0.4);
+}
+.lang-btn:hover:not(.active) {
+  color: rgba(255,255,255,0.8);
 }
 
 /* ── Layout ─────────────────────────────────────────────────────────────── */
@@ -133,7 +170,6 @@ header p {
   align-items: center;
   gap: 6px;
 }
-.group-label svg { opacity: 0.8; }
 
 label {
   display: block;
@@ -198,9 +234,14 @@ input[type="number"].required-missing {
   color: var(--white);
   border-color: var(--navy);
 }
-.radio-pill label:hover:not(.checked) {
+.radio-pill label:hover {
   border-color: var(--teal);
   color: var(--teal);
+}
+.radio-pill input:checked + label:hover {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
 }
 
 .optional-tag {
@@ -216,7 +257,6 @@ input[type="number"].required-missing {
   font-family: var(--font-display);
 }
 
-/* Calculate button */
 #calc-btn {
   width: 100%;
   padding: 12px;
@@ -250,7 +290,6 @@ input[type="number"].required-missing {
   overflow-y: auto;
 }
 
-/* Empty state */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -273,11 +312,9 @@ input[type="number"].required-missing {
 .empty-state h3 { font-family: var(--font-display); font-size: 17px; color: #8a9aaa; font-weight: 600; }
 .empty-state p  { font-size: 13px; max-width: 320px; color: #aab4c0; line-height: 1.5; }
 
-/* Results */
 #results { display: none; }
 #results.visible { display: block; }
 
-/* Section heading */
 .section-heading {
   font-family: var(--font-display);
   font-size: 11px;
@@ -290,7 +327,6 @@ input[type="number"].required-missing {
 }
 .section-heading:first-child { margin-top: 0; }
 
-/* Metric cards grid */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
@@ -387,7 +423,6 @@ input[type="number"].required-missing {
   letter-spacing: 0.02em;
 }
 
-/* ── CVD Risk card ───────────────────────────────────────────────────────── */
 .cvd-card {
   background: var(--white);
   border-radius: var(--radius);
@@ -401,9 +436,7 @@ input[type="number"].required-missing {
   animation: fadeUp 0.35s 0.28s ease both;
 }
 
-.cvd-score-wrap {
-  text-align: center;
-}
+.cvd-score-wrap { text-align: center; }
 .cvd-score {
   font-family: var(--font-mono);
   font-size: 48px;
@@ -430,17 +463,13 @@ input[type="number"].required-missing {
   margin-bottom: 8px;
 }
 
-/* Gradient risk bar */
 .risk-track {
   height: 10px;
   border-radius: 5px;
   background: linear-gradient(to right,
-    var(--green) 0%,
-    var(--green) 37%,
-    #e08800 37%,
-    #e08800 67%,
-    var(--red) 67%,
-    var(--red) 100%
+    var(--green) 0%, var(--green) 37%,
+    #e08800 37%, #e08800 67%,
+    var(--red) 67%, var(--red) 100%
   );
   position: relative;
   margin-bottom: 4px;
@@ -472,7 +501,6 @@ input[type="number"].required-missing {
   font-style: italic;
 }
 
-/* ── Methods note ────────────────────────────────────────────────────────── */
 .methods-card {
   background: var(--white);
   border-radius: var(--radius);
@@ -518,7 +546,6 @@ input[type="number"].required-missing {
 .methods-note a { color: var(--teal); text-decoration: none; }
 .methods-note a:hover { text-decoration: underline; }
 
-/* ── Validation chip ─────────────────────────────────────────────────────── */
 .validation-strip {
   display: flex;
   gap: 10px;
@@ -553,363 +580,538 @@ input[type="number"].required-missing {
 </head>
 <body>
 
-<!-- ── Header ──────────────────────────────────────────────────────────── -->
 <header>
   <div class="header-inner">
     <div class="header-accent"></div>
     <div>
-      <h1>Advanced Lipid Metrics Calculator</h1>
-      <p>LDL-C · ApoB · Remnant Cholesterol · sdLDL-P · 10-year CVD risk — from a standard lipid panel</p>
+      <h1 data-i18n="header.title">Calculadora de Métricas Lipídicas Avanzadas</h1>
+      <p data-i18n="header.subtitle">LDL-C · ApoB · Colesterol Remanente · sdLDL-P · Riesgo CV a 10 años — desde un perfil lipídico estándar</p>
     </div>
-    <span class="header-badge">For health professionals</span>
+    <div class="header-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+      <span class="header-badge" data-i18n="header.badge">Para profesionales de salud</span>
+    </div>
   </div>
 </header>
 
-<!-- ── App layout ──────────────────────────────────────────────────────── -->
 <div class="app-wrap">
-
-  <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
   <aside class="sidebar">
 
     <!-- Patient -->
     <div class="input-group">
       <div class="group-label">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        Patient
+        <span data-i18n="section.patient">Paciente</span>
       </div>
-      <label>Age (years)</label>
-      <input type="number" id="age" placeholder="e.g. 55" min="18" max="100">
-      <label>Biological sex</label>
+      <label data-i18n="label.age">Edad (años)</label>
+      <input type="number" id="age" data-i18n-placeholder="placeholder.age" placeholder="ej. 55" min="18" max="100">
+      <label data-i18n="label.sex">Sexo biológico</label>
       <div class="radio-row">
-        <div class="radio-pill"><input type="radio" name="sex" id="sex-m" value="male" checked><label for="sex-m">Male</label></div>
-        <div class="radio-pill"><input type="radio" name="sex" id="sex-f" value="female"><label for="sex-f">Female</label></div>
+        <div class="radio-pill"><input type="radio" name="sex" id="sex-m" value="male" checked><label for="sex-m" data-i18n="option.male">Masculino</label></div>
+        <div class="radio-pill"><input type="radio" name="sex" id="sex-f" value="female"><label for="sex-f" data-i18n="option.female">Femenino</label></div>
       </div>
-      <label>Race / Ethnicity</label>
+      <label data-i18n="label.race">Raza / Etnia</label>
       <div class="radio-row">
-        <div class="radio-pill"><input type="radio" name="race" id="r-w" value="white" checked><label for="r-w">White</label></div>
-        <div class="radio-pill"><input type="radio" name="race" id="r-b" value="black"><label for="r-b">Black</label></div>
-        <div class="radio-pill"><input type="radio" name="race" id="r-h" value="hispanic"><label for="r-h">Hispanic</label></div>
-        <div class="radio-pill"><input type="radio" name="race" id="r-c" value="chinese"><label for="r-c">Chinese</label></div>
+        <div class="radio-pill"><input type="radio" name="race" id="r-w" value="white" checked><label for="r-w" data-i18n="option.white">Blanco</label></div>
+        <div class="radio-pill"><input type="radio" name="race" id="r-b" value="black"><label for="r-b" data-i18n="option.black">Negro</label></div>
+        <div class="radio-pill"><input type="radio" name="race" id="r-h" value="hispanic"><label for="r-h" data-i18n="option.hispanic">Hispano</label></div>
+        <div class="radio-pill"><input type="radio" name="race" id="r-c" value="chinese"><label for="r-c" data-i18n="option.chinese">Chino</label></div>
       </div>
-      <label>BMI (kg/m²) <span class="optional-tag">optional</span></label>
-      <input type="number" id="bmi" placeholder="e.g. 27" min="10" max="80" step="0.1">
+      <label><span data-i18n="label.bmi">IMC (kg/m²)</span> <span class="optional-tag" data-i18n="tag.optional">opcional</span></label>
+      <input type="number" id="bmi" data-i18n-placeholder="placeholder.bmi" placeholder="ej. 27" min="10" max="80" step="0.1">
     </div>
 
     <!-- Lipid panel -->
     <div class="input-group">
       <div class="group-label">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
-        Lipid panel (mg/dL)
+        <span data-i18n="section.lipids">Panel lipídico (mg/dL)</span>
       </div>
-      <label>Total cholesterol <span style="color:var(--red);font-size:11px">*</span></label>
-      <input type="number" id="tc" placeholder="e.g. 190" min="50" max="600">
-      <label>Triglycerides <span style="color:var(--red);font-size:11px">*</span></label>
-      <input type="number" id="tg" placeholder="e.g. 130" min="10" max="5000">
-      <label>HDL cholesterol <span style="color:var(--red);font-size:11px">*</span></label>
-      <input type="number" id="hdl" placeholder="e.g. 55" min="5" max="200">
-      <label>LDL cholesterol <span class="optional-tag">if direct</span></label>
-      <input type="number" id="ldl" placeholder="calculated if blank" min="0" max="600">
+      <label><span data-i18n="label.tc">Colesterol total</span> <span style="color:var(--red);font-size:11px">*</span></label>
+      <input type="number" id="tc" data-i18n-placeholder="placeholder.tc" placeholder="ej. 190" min="50" max="600">
+      <label><span data-i18n="label.tg">Triglicéridos</span> <span style="color:var(--red);font-size:11px">*</span></label>
+      <input type="number" id="tg" data-i18n-placeholder="placeholder.tg" placeholder="ej. 130" min="10" max="5000">
+      <label><span data-i18n="label.hdl">Colesterol HDL</span> <span style="color:var(--red);font-size:11px">*</span></label>
+      <input type="number" id="hdl" data-i18n-placeholder="placeholder.hdl" placeholder="ej. 55" min="5" max="200">
+      <label><span data-i18n="label.ldl">Colesterol LDL</span> <span class="optional-tag" data-i18n="tag.ifdirect">si directo</span></label>
+      <input type="number" id="ldl" data-i18n-placeholder="placeholder.ldl" placeholder="calculado si vacío" min="0" max="600">
     </div>
 
     <!-- Clinical -->
     <div class="input-group">
       <div class="group-label">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        Clinical <span class="optional-tag" style="font-family:var(--font-body);text-transform:none;letter-spacing:0">for CVD risk</span>
+        <span data-i18n="section.clinical">Clínico</span> <span class="optional-tag" style="font-family:var(--font-body);text-transform:none;letter-spacing:0" data-i18n="tag.forcvd">para riesgo CV</span>
       </div>
-      <label>Systolic BP (mmHg)</label>
-      <input type="number" id="sbp" placeholder="e.g. 125" min="60" max="250">
-      <label>Diabetes</label>
+      <label data-i18n="label.sbp">PA sistólica (mmHg)</label>
+      <input type="number" id="sbp" data-i18n-placeholder="placeholder.sbp" placeholder="ej. 125" min="60" max="250">
+      <label data-i18n="label.diabetes">Diabetes</label>
       <div class="radio-row">
-        <div class="radio-pill"><input type="radio" name="dm" id="dm-n" value="no" checked><label for="dm-n">No</label></div>
-        <div class="radio-pill"><input type="radio" name="dm" id="dm-y" value="yes"><label for="dm-y">Yes</label></div>
+        <div class="radio-pill"><input type="radio" name="dm" id="dm-n" value="no" checked><label for="dm-n" data-i18n="option.no">No</label></div>
+        <div class="radio-pill"><input type="radio" name="dm" id="dm-y" value="yes"><label for="dm-y" data-i18n="option.yes">Sí</label></div>
       </div>
-      <label>Current smoker</label>
+      <label data-i18n="label.smoker">Fumador activo</label>
       <div class="radio-row">
-        <div class="radio-pill"><input type="radio" name="smk" id="smk-n" value="no" checked><label for="smk-n">No</label></div>
-        <div class="radio-pill"><input type="radio" name="smk" id="smk-y" value="yes"><label for="smk-y">Yes</label></div>
+        <div class="radio-pill"><input type="radio" name="smk" id="smk-n" value="no" checked><label for="smk-n" data-i18n="option.no">No</label></div>
+        <div class="radio-pill"><input type="radio" name="smk" id="smk-y" value="yes"><label for="smk-y" data-i18n="option.yes">Sí</label></div>
       </div>
-      <label>BP medication</label>
+      <label data-i18n="label.bpmed">Medicamento antihipertensivo</label>
       <div class="radio-row">
-        <div class="radio-pill"><input type="radio" name="bpmed" id="bp-n" value="no" checked><label for="bp-n">No</label></div>
-        <div class="radio-pill"><input type="radio" name="bpmed" id="bp-y" value="yes"><label for="bp-y">Yes</label></div>
+        <div class="radio-pill"><input type="radio" name="bpmed" id="bp-n" value="no" checked><label for="bp-n" data-i18n="option.no">No</label></div>
+        <div class="radio-pill"><input type="radio" name="bpmed" id="bp-y" value="yes"><label for="bp-y" data-i18n="option.yes">Sí</label></div>
       </div>
-      <label>Lipid-lowering therapy</label>
+      <label data-i18n="label.lipmed">Tratamiento hipolipemiante</label>
       <div class="radio-row">
-        <div class="radio-pill"><input type="radio" name="lipmed" id="lp-n" value="no" checked><label for="lp-n">No</label></div>
-        <div class="radio-pill"><input type="radio" name="lipmed" id="lp-y" value="yes"><label for="lp-y">Yes</label></div>
+        <div class="radio-pill"><input type="radio" name="lipmed" id="lp-n" value="no" checked><label for="lp-n" data-i18n="option.no">No</label></div>
+        <div class="radio-pill"><input type="radio" name="lipmed" id="lp-y" value="yes"><label for="lp-y" data-i18n="option.yes">Sí</label></div>
       </div>
-      <label>Family Hx heart attack</label>
+      <label data-i18n="label.fhx">Antecedente familiar de IAM</label>
       <div class="radio-row">
-        <div class="radio-pill"><input type="radio" name="fhx" id="fh-n" value="no" checked><label for="fh-n">No</label></div>
-        <div class="radio-pill"><input type="radio" name="fhx" id="fh-y" value="yes"><label for="fh-y">Yes</label></div>
+        <div class="radio-pill"><input type="radio" name="fhx" id="fh-n" value="no" checked><label for="fh-n" data-i18n="option.no">No</label></div>
+        <div class="radio-pill"><input type="radio" name="fhx" id="fh-y" value="yes"><label for="fh-y" data-i18n="option.yes">Sí</label></div>
       </div>
     </div>
 
-    <button id="calc-btn">Calculate →</button>
+    <button id="calc-btn" data-i18n="btn.calculate">Calcular →</button>
 
   </aside>
 
-  <!-- ── Main ─────────────────────────────────────────────────────────── -->
   <main class="main">
-
-    <!-- Empty state -->
     <div id="empty-state" class="empty-state">
       <div class="empty-icon">🧬</div>
-      <h3>Ready to calculate</h3>
-      <p>Enter Total Cholesterol, Triglycerides, and HDL in the panel to the left, then press Calculate.</p>
+      <h3 data-i18n="empty.title">Listo para calcular</h3>
+      <p data-i18n="empty.desc">Ingrese Colesterol Total, Triglicéridos y HDL en el panel izquierdo, luego presione Calcular.</p>
     </div>
 
-    <!-- Results -->
     <div id="results">
-
-      <div class="section-heading">Estimated lipid markers</div>
+      <div class="section-heading" data-i18n="results.lipids">Marcadores lipídicos estimados</div>
       <div class="metrics-grid" id="metrics-grid"></div>
-
       <div id="cvd-section"></div>
-
       <div class="methods-card" id="methods-card" style="display:none">
-        <h4>Reference values</h4>
+        <h4 data-i18n="refs.title">Valores de referencia</h4>
         <div class="methods-grid">
           <div>
             <div class="methods-row"><span class="m-label">LDL-C</span><span class="m-val">&lt;100 mg/dL</span></div>
-            <div class="methods-row"><span class="m-label">Non-HDL cholesterol</span><span class="m-val">&lt;130 mg/dL</span></div>
-            <div class="methods-row"><span class="m-label">TG / HDL ratio</span><span class="m-val">&lt;2.0</span></div>
-            <div class="methods-row"><span class="m-label">Remnant cholesterol</span><span class="m-val">&lt;38 mg/dL</span></div>
+            <div class="methods-row"><span class="m-label" data-i18n="ref.nonhdl">Colesterol no-HDL</span><span class="m-val">&lt;130 mg/dL</span></div>
+            <div class="methods-row"><span class="m-label" data-i18n="ref.tghdl">Cociente TG/HDL</span><span class="m-val">&lt;2.0</span></div>
+            <div class="methods-row"><span class="m-label" data-i18n="ref.remnant">Colesterol remanente</span><span class="m-val">&lt;38 mg/dL</span></div>
           </div>
           <div>
-            <div class="methods-row"><span class="m-label">Small-dense LDL-P</span><span class="m-val">&lt;630 nmol/L</span></div>
-            <div class="methods-row"><span class="m-label">ApoB (men)</span><span class="m-val">&lt;108 mg/dL</span></div>
-            <div class="methods-row"><span class="m-label">ApoB (women)</span><span class="m-val">&lt;99 mg/dL</span></div>
-            <div class="methods-row"><span class="m-label">10-year CVD risk</span><span class="m-val">&lt;7.5%</span></div>
+            <div class="methods-row"><span class="m-label" data-i18n="ref.sdldl">LDL pequeño-denso</span><span class="m-val">&lt;630 nmol/L</span></div>
+            <div class="methods-row"><span class="m-label" data-i18n="ref.apobm">ApoB (hombres)</span><span class="m-val">&lt;108 mg/dL</span></div>
+            <div class="methods-row"><span class="m-label" data-i18n="ref.apobf">ApoB (mujeres)</span><span class="m-val">&lt;99 mg/dL</span></div>
+            <div class="methods-row"><span class="m-label" data-i18n="ref.cvd">Riesgo CV a 10 años</span><span class="m-val">&lt;7.5%</span></div>
           </div>
         </div>
-        <div class="methods-note">
-          <strong>LDL-C:</strong> Friedewald (TG ≤250 mg/dL) or Sampson 2020 (TG &gt;250); RMSE 4.0 mg/dL, 98% of errors within the LDL-C MDC (15–25 mg/dL).
-          <strong>ApoB:</strong> Non-linear formula derived from MCPS; externally validated in two independent Mexican cohorts
-          (n=928 total, RMSE 11.8 mg/dL [95% CI 11.1–12.6], R²=0.805, bias −0.01 mg/dL).
-          <strong>Remnant cholesterol</strong> and <strong>sdLDL-P</strong>: Cruz et al, JCL 2024.
-          <strong>10-year CVD risk:</strong> MESA score.
-          Thresholds are goals in healthy adults and should be tailored to individual CVD risk.
-          <br><br>
-          <a href="https://doi.org/tktktk" target="_blank">Learn more about this calculator →</a>
-        </div>
+        <div class="methods-note" id="methods-note"></div>
         <div class="validation-strip" id="val-strip"></div>
       </div>
     </div>
-
   </main>
 </div>
 
-<!-- ── MESA CVD risk (pure JS implementation) ──────────────────────────── -->
 <script>
-// ── MESA 10-year CHD risk ─────────────────────────────────────────────────
-// Coefficients from Bild et al, MESA study (Circulation 2004 & updates)
-function mesaRisk(params) {
-  const { age, sex, race, totchol, hdl, sbp,
-          bp_med, lipid_med, smoker, diabetes, fh } = params;
+// ═══════════════════════════════════════════════════════════════════
+// TRANSLATIONS
+// ═══════════════════════════════════════════════════════════════════
+const i18n = {
+  es: {
+    "header.title":    "Calculadora de Métricas Lipídicas Avanzadas",
+    "header.subtitle": "LDL-C · ApoB · Colesterol Remanente · sdLDL-P · Riesgo CV a 10 años — desde un perfil lipídico estándar",
+    "header.badge":    "Para profesionales de salud",
+    "section.patient": "Paciente",
+    "section.lipids":  "Panel lipídico (mg/dL)",
+    "section.clinical":"Clínico",
+    "label.age":    "Edad (años)",
+    "label.sex":    "Sexo biológico",
+    "label.race":   "Raza / Etnia",
+    "label.bmi":    "IMC (kg/m²)",
+    "label.tc":     "Colesterol total",
+    "label.tg":     "Triglicéridos",
+    "label.hdl":    "Colesterol HDL",
+    "label.ldl":    "Colesterol LDL",
+    "label.sbp":    "PA sistólica (mmHg)",
+    "label.diabetes":"Diabetes",
+    "label.smoker": "Fumador activo",
+    "label.bpmed":  "Medicamento antihipertensivo",
+    "label.lipmed": "Tratamiento hipolipemiante",
+    "label.fhx":    "Antecedente familiar de IAM",
+    "option.male":    "Masculino",
+    "option.female":  "Femenino",
+    "option.white":   "Blanco",
+    "option.black":   "Negro",
+    "option.hispanic":"Hispano",
+    "option.chinese": "Chino",
+    "option.no":  "No",
+    "option.yes": "Sí",
+    "tag.optional": "opcional",
+    "tag.ifdirect": "si directo",
+    "tag.forcvd":   "para riesgo CV",
+    "placeholder.age": "ej. 55",
+    "placeholder.bmi": "ej. 27",
+    "placeholder.tc":  "ej. 190",
+    "placeholder.tg":  "ej. 130",
+    "placeholder.hdl": "ej. 55",
+    "placeholder.ldl": "calculado si vacío",
+    "placeholder.sbp": "ej. 125",
+    "btn.calculate": "Calcular →",
+    "empty.title": "Listo para calcular",
+    "empty.desc":  "Ingrese Colesterol Total, Triglicéridos y HDL en el panel izquierdo, luego presione Calcular.",
+    "results.lipids": "Marcadores lipídicos estimados",
+    "results.cvd":    "Riesgo cardiovascular a 10 años (puntuación MESA)",
+    "refs.title": "Valores de referencia",
+    "ref.nonhdl":  "Colesterol no-HDL",
+    "ref.tghdl":   "Cociente TG/HDL",
+    "ref.remnant": "Colesterol remanente",
+    "ref.sdldl":   "LDL pequeño-denso",
+    "ref.apobm":   "ApoB (hombres)",
+    "ref.apobf":   "ApoB (mujeres)",
+    "ref.cvd":     "Riesgo CV a 10 años",
+    "cvd.enter":    "Ingrese Edad y PA sistólica para calcular el riesgo CV a 10 años según MESA.",
+    "cvd.riskLevel":"Nivel de riesgo",
+    "cvd.10yr":     "riesgo a 10 años",
+    "cvd.low":      "Riesgo bajo — probabilidad estimada <7.5% de un evento coronario en 10 años.",
+    "cvd.mid":      "Riesgo intermedio — considere optimización del estilo de vida y toma de decisiones compartida.",
+    "cvd.high":     "Riesgo alto — se recomienda enérgicamente tratamiento médico dirigido por guías. Evalúe estatinas y terapias adicionales.",
+    "status.normal":     "Normal",
+    "status.borderline": "Limítrofe",
+    "status.elevated":   "Elevado",
+    "card.direct": "Medición directa",
+    "card.friedewald": "Friedewald",
+    "card.sampson":    "Sampson 2020",
+    "card.ref.ldl":    "Fórmula: ",
+    "card.ref.apob.m": "Normal <108 (hombre) · n=928 val. externa",
+    "card.ref.apob.f": "Normal <99 (mujer) · n=928 val. externa",
+    "card.mcps":       "Fórmula MCPS",
+    "card.ref.nonhdl": "Meta <130 mg/dL",
+    "card.ref.tghdl":  "Proxy resistencia insulina · Normal <2.0",
+    "card.ref.remnant":"Normal <38 mg/dL · Cruz et al, JCL 2024",
+    "card.ref.sdldl":  "Normal <630 nmol/L",
+    "methods.note": `<strong>LDL-C:</strong> Friedewald (TG ≤250 mg/dL) o Sampson 2020 (TG &gt;250); RMSE 4.0 mg/dL, 98% de errores dentro del MDC de LDL-C (15–25 mg/dL).
+      <strong>ApoB:</strong> Fórmula no lineal derivada del MCPS; validada externamente en dos cohortes mexicanas independientes
+      (n=928 total, RMSE 11.8 mg/dL [IC 95% 11.1–12.6], R²=0.805, sesgo −0.01 mg/dL).
+      <strong>Colesterol remanente</strong> y <strong>sdLDL-P</strong>: Cruz et al, JCL 2024.
+      <strong>Riesgo CV a 10 años:</strong> Puntuación MESA.
+      Los umbrales son metas en adultos sanos y deben ajustarse al riesgo CV individual.<br><br>
+      <a href="https://doi.org/tktktk" target="_blank">Más información sobre esta calculadora →</a>`,
+  },
 
-  // Race-sex specific baseline survival and coefficients
-  // Source: CVrisk R package / MESA equations
-  const coefs = {
-    white_male:    { s0: 0.9402, b_age:0.0600, b_tc:0.0020, b_hdl:-0.0053, b_sbp:0.0066, b_sbp_rx:0.0095, b_smk:0.3469, b_dm:0.6330, b_fh:0.2771, b_lipid:-0.0000, mean_lp:2.108 },
-    white_female:  { s0: 0.9739, b_age:0.0426, b_tc:0.0015, b_hdl:-0.0062, b_sbp:0.0062, b_sbp_rx:0.0095, b_smk:0.4373, b_dm:0.8738, b_fh:0.2360, b_lipid:-0.0000, mean_lp:1.098 },
-    black_male:    { s0: 0.9272, b_age:0.0557, b_tc:0.0018, b_hdl:-0.0045, b_sbp:0.0074, b_sbp_rx:0.0095, b_smk:0.3688, b_dm:0.6430, b_fh:0.2771, b_lipid:-0.0000, mean_lp:2.210 },
-    black_female:  { s0: 0.9519, b_age:0.0408, b_tc:0.0014, b_hdl:-0.0057, b_sbp:0.0070, b_sbp_rx:0.0095, b_smk:0.4366, b_dm:0.8547, b_fh:0.2360, b_lipid:-0.0000, mean_lp:1.233 },
-    hispanic_male:   { s0: 0.9628, b_age:0.0486, b_tc:0.0015, b_hdl:-0.0049, b_sbp:0.0067, b_sbp_rx:0.0095, b_smk:0.3634, b_dm:0.6720, b_fh:0.2771, b_lipid:-0.0000, mean_lp:1.732 },
-    hispanic_female: { s0: 0.9791, b_age:0.0316, b_tc:0.0013, b_hdl:-0.0055, b_sbp:0.0064, b_sbp_rx:0.0095, b_smk:0.4021, b_dm:0.8264, b_fh:0.2360, b_lipid:-0.0000, mean_lp:0.954 },
-    chinese_male:    { s0: 0.9879, b_age:0.0341, b_tc:0.0012, b_hdl:-0.0042, b_sbp:0.0060, b_sbp_rx:0.0095, b_smk:0.3412, b_dm:0.6100, b_fh:0.2771, b_lipid:-0.0000, mean_lp:1.123 },
-    chinese_female:  { s0: 0.9936, b_age:0.0245, b_tc:0.0011, b_hdl:-0.0050, b_sbp:0.0058, b_sbp_rx:0.0095, b_smk:0.3800, b_dm:0.7900, b_fh:0.2360, b_lipid:-0.0000, mean_lp:0.721 },
-  };
+  en: {
+    "header.title":    "Advanced Lipid Metrics Calculator",
+    "header.subtitle": "LDL-C · ApoB · Remnant Cholesterol · sdLDL-P · 10-year CVD risk — from a standard lipid panel",
+    "header.badge":    "For health professionals",
+    "section.patient": "Patient",
+    "section.lipids":  "Lipid panel (mg/dL)",
+    "section.clinical":"Clinical",
+    "label.age":    "Age (years)",
+    "label.sex":    "Biological sex",
+    "label.race":   "Race / Ethnicity",
+    "label.bmi":    "BMI (kg/m²)",
+    "label.tc":     "Total cholesterol",
+    "label.tg":     "Triglycerides",
+    "label.hdl":    "HDL cholesterol",
+    "label.ldl":    "LDL cholesterol",
+    "label.sbp":    "Systolic BP (mmHg)",
+    "label.diabetes":"Diabetes",
+    "label.smoker": "Current smoker",
+    "label.bpmed":  "BP medication",
+    "label.lipmed": "Lipid-lowering therapy",
+    "label.fhx":    "Family Hx heart attack",
+    "option.male":    "Male",
+    "option.female":  "Female",
+    "option.white":   "White",
+    "option.black":   "Black",
+    "option.hispanic":"Hispanic",
+    "option.chinese": "Chinese",
+    "option.no":  "No",
+    "option.yes": "Yes",
+    "tag.optional": "optional",
+    "tag.ifdirect": "if direct",
+    "tag.forcvd":   "for CVD risk",
+    "placeholder.age": "e.g. 55",
+    "placeholder.bmi": "e.g. 27",
+    "placeholder.tc":  "e.g. 190",
+    "placeholder.tg":  "e.g. 130",
+    "placeholder.hdl": "e.g. 55",
+    "placeholder.ldl": "calculated if blank",
+    "placeholder.sbp": "e.g. 125",
+    "btn.calculate": "Calculate →",
+    "empty.title": "Ready to calculate",
+    "empty.desc":  "Enter Total Cholesterol, Triglycerides, and HDL in the panel to the left, then press Calculate.",
+    "results.lipids": "Estimated lipid markers",
+    "results.cvd":    "10-year cardiovascular risk (MESA score)",
+    "refs.title": "Reference values",
+    "ref.nonhdl":  "Non-HDL cholesterol",
+    "ref.tghdl":   "TG / HDL ratio",
+    "ref.remnant": "Remnant cholesterol",
+    "ref.sdldl":   "Small-dense LDL-P",
+    "ref.apobm":   "ApoB (men)",
+    "ref.apobf":   "ApoB (women)",
+    "ref.cvd":     "10-year CVD risk",
+    "cvd.enter":    "Enter Age and Systolic BP to calculate the MESA 10-year CVD risk score.",
+    "cvd.riskLevel":"Risk level",
+    "cvd.10yr":     "10-year risk",
+    "cvd.low":      "Low risk — estimated <7.5% probability of a coronary heart disease event over 10 years.",
+    "cvd.mid":      "Intermediate risk — consider lifestyle optimisation and shared decision-making regarding therapy.",
+    "cvd.high":     "High risk — guideline-directed medical therapy strongly recommended. Evaluate statin and additional therapies.",
+    "status.normal":     "Normal",
+    "status.borderline": "Borderline",
+    "status.elevated":   "Elevated",
+    "card.direct": "Direct measurement",
+    "card.friedewald": "Friedewald",
+    "card.sampson":    "Sampson 2020",
+    "card.ref.ldl":    "Formula: ",
+    "card.ref.apob.m": "Normal <108 (male) · n=928 ext. validation",
+    "card.ref.apob.f": "Normal <99 (female) · n=928 ext. validation",
+    "card.mcps":       "MCPS formula",
+    "card.ref.nonhdl": "Target <130 mg/dL",
+    "card.ref.tghdl":  "Insulin resistance proxy · Normal <2.0",
+    "card.ref.remnant":"Normal <38 mg/dL · Cruz et al, JCL 2024",
+    "card.ref.sdldl":  "Normal <630 nmol/L",
+    "methods.note": `<strong>LDL-C:</strong> Friedewald (TG ≤250 mg/dL) or Sampson 2020 (TG &gt;250); RMSE 4.0 mg/dL, 98% of errors within the LDL-C MDC (15–25 mg/dL).
+      <strong>ApoB:</strong> Non-linear formula derived from MCPS; externally validated in two independent Mexican cohorts
+      (n=928 total, RMSE 11.8 mg/dL [95% CI 11.1–12.6], R²=0.805, bias −0.01 mg/dL).
+      <strong>Remnant cholesterol</strong> and <strong>sdLDL-P</strong>: Cruz et al, JCL 2024.
+      <strong>10-year CVD risk:</strong> MESA score.
+      Thresholds are goals in healthy adults and should be tailored to individual CVD risk.<br><br>
+      <a href="https://doi.org/tktktk" target="_blank">Learn more about this calculator →</a>`,
+  }
+};
 
-  const key = `${race}_${sex}`;
-  const c = coefs[key] || coefs['white_male'];
+// ═══════════════════════════════════════════════════════════════════
+// LANGUAGE ENGINE
+// ═══════════════════════════════════════════════════════════════════
+let currentLang = 'es';
 
-  const sbp_term = bp_med ? c.b_sbp_rx * sbp : c.b_sbp * sbp;
-  const lp = c.b_age * age + c.b_tc * totchol + c.b_hdl * hdl +
-             sbp_term + c.b_smk * smoker + c.b_dm * diabetes + c.b_fh * fh;
-
-  const risk = (1 - Math.pow(c.s0, Math.exp(lp - c.mean_lp))) * 100;
-  return Math.max(0, Math.min(100, risk));
+function t(key) {
+  return i18n[currentLang][key] || i18n['en'][key] || key;
 }
 
-// ── Lipid formulas ─────────────────────────────────────────────────────────
-function calcLDL(TC, HDL, TG) {
-  const NonHDL = TC - HDL;
-  if (TG <= 250) {
-    return { val: TC - HDL - TG / 5, method: 'Friedewald' };
-  } else {
-    const val = TC / 0.948 - HDL / 0.971
-      - (TG / 8.56 + TG * NonHDL / 2140 - TG * TG / 16100) - 9.44;
-    return { val, method: 'Sampson 2020' };
+function applyTranslations() {
+  document.documentElement.lang = currentLang;
+  document.title = t('header.title');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = t(key);
+  });
+
+  // Update methods note if visible
+  const mn = document.getElementById('methods-note');
+  if (mn) mn.innerHTML = t('methods.note');
+
+  // Update dynamic results if visible
+  if (document.getElementById('results').classList.contains('visible')) {
+    // re-render to update all card text
+    triggerCalculate(false);
   }
 }
 
-function calcApoB(TC, HDL, TG) {
-  const NH = TC - HDL;
-  return 21.94 + 0.568 * NH + 0.011 * TG - 0.257 * HDL
-       - 9e-6  * TG * TG
-       + 1.4e-4 * NH * NH
-       + 1.3e-4 * NH * TG
-       - 2.2e-4 * NH * HDL;
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  applyTranslations();
 }
 
-function calcRemnants(TG, HDL) { return (TG / HDL) * 0.78 + 36.5; }
-function calcSdLDL(TC, HDL)    { return (TC - HDL) * 1.87 + 350; }
+// ═══════════════════════════════════════════════════════════════════
+// MESA CVD RISK
+// ═══════════════════════════════════════════════════════════════════
+function mesaRisk(params) {
+  const { age, sex, race, totchol, hdl, sbp,
+          bp_med, lipid_med, smoker, diabetes, fh } = params;
+  const coefs = {
+    white_male:      { s0:0.9402, b_age:0.0600, b_tc:0.0020, b_hdl:-0.0053, b_sbp:0.0066, b_sbp_rx:0.0095, b_smk:0.3469, b_dm:0.6330, b_fh:0.2771, mean_lp:2.108 },
+    white_female:    { s0:0.9739, b_age:0.0426, b_tc:0.0015, b_hdl:-0.0062, b_sbp:0.0062, b_sbp_rx:0.0095, b_smk:0.4373, b_dm:0.8738, b_fh:0.2360, mean_lp:1.098 },
+    black_male:      { s0:0.9272, b_age:0.0557, b_tc:0.0018, b_hdl:-0.0045, b_sbp:0.0074, b_sbp_rx:0.0095, b_smk:0.3688, b_dm:0.6430, b_fh:0.2771, mean_lp:2.210 },
+    black_female:    { s0:0.9519, b_age:0.0408, b_tc:0.0014, b_hdl:-0.0057, b_sbp:0.0070, b_sbp_rx:0.0095, b_smk:0.4366, b_dm:0.8547, b_fh:0.2360, mean_lp:1.233 },
+    hispanic_male:   { s0:0.9628, b_age:0.0486, b_tc:0.0015, b_hdl:-0.0049, b_sbp:0.0067, b_sbp_rx:0.0095, b_smk:0.3634, b_dm:0.6720, b_fh:0.2771, mean_lp:1.732 },
+    hispanic_female: { s0:0.9791, b_age:0.0316, b_tc:0.0013, b_hdl:-0.0055, b_sbp:0.0064, b_sbp_rx:0.0095, b_smk:0.4021, b_dm:0.8264, b_fh:0.2360, mean_lp:0.954 },
+    chinese_male:    { s0:0.9879, b_age:0.0341, b_tc:0.0012, b_hdl:-0.0042, b_sbp:0.0060, b_sbp_rx:0.0095, b_smk:0.3412, b_dm:0.6100, b_fh:0.2771, mean_lp:1.123 },
+    chinese_female:  { s0:0.9936, b_age:0.0245, b_tc:0.0011, b_hdl:-0.0050, b_sbp:0.0058, b_sbp_rx:0.0095, b_smk:0.3800, b_dm:0.7900, b_fh:0.2360, mean_lp:0.721 },
+  };
+  const key = `${race}_${sex}`;
+  const c = coefs[key] || coefs['white_male'];
+  const sbp_term = bp_med ? c.b_sbp_rx * sbp : c.b_sbp * sbp;
+  const lp = c.b_age*age + c.b_tc*totchol + c.b_hdl*hdl +
+             sbp_term + c.b_smk*smoker + c.b_dm*diabetes + c.b_fh*fh;
+  return Math.max(0, Math.min(100, (1 - Math.pow(c.s0, Math.exp(lp - c.mean_lp))) * 100));
+}
 
-// ── Colour helper ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+// LIPID FORMULAS
+// ═══════════════════════════════════════════════════════════════════
+function calcLDL(TC, HDL, TG) {
+  const NonHDL = TC - HDL;
+  if (TG <= 250) return { val: TC - HDL - TG/5, method: t('card.friedewald') };
+  const val = TC/0.948 - HDL/0.971
+    - (TG/8.56 + TG*NonHDL/2140 - TG*TG/16100) - 9.44;
+  return { val, method: t('card.sampson') };
+}
+function calcApoB(TC, HDL, TG) {
+  const NH = TC - HDL;
+  return 21.94 + 0.568*NH + 0.011*TG - 0.257*HDL
+       - 9e-6*TG*TG + 1.4e-4*NH*NH + 1.3e-4*NH*TG - 2.2e-4*NH*HDL;
+}
+function calcRemnants(TG, HDL) { return (TG/HDL)*0.78 + 36.5; }
+function calcSdLDL(TC, HDL)    { return (TC-HDL)*1.87 + 350; }
+
 function traffic(val, lo, hi) {
-  if (val === null || isNaN(val)) return 'neutral';
+  if (val===null || isNaN(val)) return 'neutral';
   if (val < lo) return 'green';
   if (val < hi) return 'amber';
   return 'red';
 }
 
-function statusLabel(t, lo, hi) {
-  const icons = { green: '✓', amber: '!', red: '↑', neutral: '—' };
-  const labels = { green: 'Normal', amber: 'Borderline', red: 'Elevated', neutral: '—' };
-  return `<span class="card-status status-${t}">${icons[t]} ${labels[t]}</span>`;
+function statusLabel(tier) {
+  const icons  = { green:'✓', amber:'!', red:'↑', neutral:'—' };
+  const keys   = { green:'status.normal', amber:'status.borderline', red:'status.elevated', neutral:'—' };
+  return `<span class="card-status status-${tier}">${icons[tier]} ${t(keys[tier])}</span>`;
 }
 
-// ── Build a metric card ────────────────────────────────────────────────────
 function buildCard(label, val, unit, lo, hi, refText, method) {
-  const t = traffic(val, lo, hi);
-  const display = (val === null || isNaN(val)) ? '—' : val.toFixed(1);
+  const tier = traffic(val, lo, hi);
+  const display = (val===null || isNaN(val)) ? '—' : val.toFixed(1);
   return `
     <div class="metric-card">
-      <div class="card-top-bar bar-${t}"></div>
+      <div class="card-top-bar bar-${tier}"></div>
       <div class="card-label">${label}</div>
       <div class="card-value">${display}<span class="card-unit">${unit}</span></div>
-      ${statusLabel(t, lo, hi)}
+      ${statusLabel(tier)}
       ${method ? `<div class="card-method">${method}</div>` : ''}
       <div class="card-ref">${refText}</div>
     </div>`;
 }
 
-// ── Main calculate ─────────────────────────────────────────────────────────
-document.getElementById('calc-btn').addEventListener('click', () => {
+// ═══════════════════════════════════════════════════════════════════
+// CALCULATE
+// ═══════════════════════════════════════════════════════════════════
+function triggerCalculate(validate = true) {
   const TC  = parseFloat(document.getElementById('tc').value);
   const TG  = parseFloat(document.getElementById('tg').value);
   const HDL = parseFloat(document.getElementById('hdl').value);
   const ldlInput = parseFloat(document.getElementById('ldl').value);
   const age = parseFloat(document.getElementById('age').value);
   const sbp = parseFloat(document.getElementById('sbp').value);
-  const bmi = parseFloat(document.getElementById('bmi').value);
 
   const sex   = document.querySelector('input[name="sex"]:checked').value;
   const race  = document.querySelector('input[name="race"]:checked').value;
   const dm    = document.querySelector('input[name="dm"]:checked').value === 'yes' ? 1 : 0;
   const smk   = document.querySelector('input[name="smk"]:checked').value === 'yes' ? 1 : 0;
   const bpmed = document.querySelector('input[name="bpmed"]:checked').value === 'yes' ? 1 : 0;
-  const lipmed= document.querySelector('input[name="lipmed"]:checked').value === 'yes' ? 1 : 0;
   const fhx   = document.querySelector('input[name="fhx"]:checked').value === 'yes' ? 1 : 0;
 
-  // Validate required
-  let ok = true;
-  ['tc','tg','hdl'].forEach(id => {
-    const el = document.getElementById(id);
-    const v  = parseFloat(el.value);
-    if (isNaN(v) || v <= 0) { el.classList.add('required-missing'); ok = false; }
-    else el.classList.remove('required-missing');
-  });
-  if (!ok) {
-    document.getElementById('tc').focus();
-    return;
+  if (validate) {
+    let ok = true;
+    ['tc','tg','hdl'].forEach(id => {
+      const el = document.getElementById(id);
+      const v  = parseFloat(el.value);
+      if (isNaN(v) || v <= 0) { el.classList.add('required-missing'); ok = false; }
+      else el.classList.remove('required-missing');
+    });
+    if (!ok) { document.getElementById('tc').focus(); return; }
+  } else {
+    if (isNaN(TC) || isNaN(TG) || isNaN(HDL)) return;
   }
 
-  // ── Compute ──────────────────────────────────────────────────────────────
   const NonHDL = TC - HDL;
   const TG_HDL = TG / HDL;
 
-  // LDL
-  let ldlVal, ldlMethod;
+  let ldlVal, ldlMethod, ldlMethodShort;
   if (!isNaN(ldlInput) && ldlInput > 0) {
-    ldlVal = ldlInput; ldlMethod = 'Direct measurement';
+    ldlVal = ldlInput;
+    ldlMethod = t('card.direct');
+    ldlMethodShort = null;
   } else {
     const r = calcLDL(TC, HDL, TG);
-    ldlVal = r.val; ldlMethod = r.method + (TG <= 250 ? ' (TG ≤250)' : ' (TG >250)');
+    ldlVal = r.val;
+    ldlMethod = r.method + (TG <= 250 ? ' (TG ≤250)' : ' (TG >250)');
+    ldlMethodShort = null;
   }
 
-  const apobVal    = calcApoB(TC, HDL, TG);
-  const remnants   = calcRemnants(TG, HDL);
-  const sdldl      = calcSdLDL(TC, HDL);
+  const apobVal  = calcApoB(TC, HDL, TG);
+  const remnants = calcRemnants(TG, HDL);
+  const sdldl    = calcSdLDL(TC, HDL);
+  const ApoB_lo  = sex === 'male' ? 108 : 99;
+  const ApoB_hi  = sex === 'male' ? 120 : 110;
+  const apobRef  = sex === 'male' ? t('card.ref.apob.m') : t('card.ref.apob.f');
 
-  const ApoB_lo = sex === 'male' ? 108 : 99;
-  const ApoB_hi = sex === 'male' ? 120 : 110;
-
-  // CVD risk
-  let cvdRisk = null;
-  const canCVD = !isNaN(age) && !isNaN(sbp);
-  if (canCVD) {
-    cvdRisk = mesaRisk({ age, sex, race, totchol: TC, hdl: HDL, sbp,
-                         bp_med: bpmed, lipid_med: lipmed, smoker: smk,
-                         diabetes: dm, fh: fhx });
-  }
-
-  // ── Render metric cards ──────────────────────────────────────────────────
   const grid = document.getElementById('metrics-grid');
   grid.innerHTML =
-    buildCard('Estimated LDL-C', ldlVal, 'mg/dL', 100, 130,
-              `Formula: ${ldlMethod}`, null) +
+    buildCard('LDL-C', ldlVal, 'mg/dL', 100, 130,
+              t('card.ref.ldl') + ldlMethod, null) +
     buildCard('ApoB', apobVal, 'mg/dL', ApoB_lo, ApoB_hi,
-              `Normal <${ApoB_lo} (${sex}) · n=928 ext. validation`, 'MCPS formula') +
-    buildCard('Non-HDL Cholesterol', NonHDL, 'mg/dL', 130, 190,
-              'Target <130 mg/dL', null) +
-    buildCard('TG / HDL Ratio', TG_HDL, '', 2.0, 2.5,
-              'Insulin resistance proxy · Normal <2.0', null) +
-    buildCard('Remnant Cholesterol', remnants, 'mg/dL', 38, 42,
-              'Normal <38 mg/dL · Cruz et al, JCL 2024', null) +
-    buildCard('Small-dense LDL-P', sdldl, 'nmol/L', 630, 730,
-              'Normal <630 nmol/L', null);
+              apobRef, t('card.mcps')) +
+    buildCard(t('ref.nonhdl'), NonHDL, 'mg/dL', 130, 190,
+              t('card.ref.nonhdl'), null) +
+    buildCard(t('ref.tghdl'), TG_HDL, '', 2.0, 2.5,
+              t('card.ref.tghdl'), null) +
+    buildCard(t('ref.remnant'), remnants, 'mg/dL', 38, 42,
+              t('card.ref.remnant'), null) +
+    buildCard(t('ref.sdldl'), sdldl, 'nmol/L', 630, 730,
+              t('card.ref.sdldl'), null);
 
-  // ── CVD risk section ─────────────────────────────────────────────────────
+  // CVD
+  const canCVD = !isNaN(age) && !isNaN(sbp);
   const cvdSection = document.getElementById('cvd-section');
-  if (canCVD && cvdRisk !== null) {
+  const sectionLabel = document.querySelector('.section-heading[data-i18n="results.lipids"]');
+
+  if (canCVD) {
+    const cvdRisk = mesaRisk({ age, sex, race, totchol:TC, hdl:HDL, sbp,
+                               bp_med:bpmed, lipid_med:0, smoker:smk,
+                               diabetes:dm, fh:fhx });
     const cvdT = traffic(cvdRisk, 7.5, 20);
-    const clr = { green: 'var(--green)', amber: 'var(--amber)', red: 'var(--red)', neutral: 'var(--muted)' }[cvdT];
-    const needlePct = Math.min(Math.max(cvdRisk / 30 * 100, 1), 99);
-    const interp =
-      cvdRisk < 7.5  ? 'Low risk — estimated <7.5% probability of a coronary heart disease event over 10 years.' :
-      cvdRisk < 20   ? 'Intermediate risk — consider lifestyle optimisation and shared decision-making regarding therapy.' :
-                       'High risk — guideline-directed medical therapy strongly recommended. Evaluate statin and additional therapies.';
+    const clr  = { green:'var(--green)', amber:'var(--amber)', red:'var(--red)', neutral:'var(--muted)' }[cvdT];
+    const needlePct = Math.min(Math.max(cvdRisk/30*100, 1), 99);
+    const interp = cvdRisk < 7.5 ? t('cvd.low') : cvdRisk < 20 ? t('cvd.mid') : t('cvd.high');
     cvdSection.innerHTML = `
-      <div class="section-heading" style="margin-top:22px">10-year cardiovascular risk (MESA score)</div>
+      <div class="section-heading">${t('results.cvd')}</div>
       <div class="cvd-card">
         <div class="cvd-score-wrap">
           <div class="cvd-score" style="color:${clr}">${cvdRisk.toFixed(1)}%</div>
-          <div class="cvd-score-label">10-year risk</div>
+          <div class="cvd-score-label">${t('cvd.10yr')}</div>
         </div>
         <div style="flex:1">
-          <div class="cvd-right-label">Risk level</div>
+          <div class="cvd-right-label">${t('cvd.riskLevel')}</div>
           <div class="risk-track">
             <div class="risk-needle" style="left:${needlePct}%"></div>
           </div>
-          <div class="risk-ticks"><span>0%</span><span>Low &lt;7.5</span><span>High ≥20</span><span>30%</span></div>
+          <div class="risk-ticks"><span>0%</span><span>&lt;7.5</span><span>≥20</span><span>30%</span></div>
           <div class="cvd-interpretation">${interp}</div>
         </div>
       </div>`;
-  } else if (!canCVD) {
+  } else {
     cvdSection.innerHTML = `
-      <div class="section-heading" style="margin-top:22px">10-year cardiovascular risk</div>
+      <div class="section-heading">${t('results.cvd')}</div>
       <div class="cvd-card" style="color:var(--muted);font-size:13px;font-style:italic">
-        Enter Age and Systolic BP to calculate the MESA 10-year CVD risk score.
+        ${t('cvd.enter')}
       </div>`;
   }
 
-  // ── Validation chips ─────────────────────────────────────────────────────
+  // Validation chips
   document.getElementById('val-strip').innerHTML = `
     <div class="v-chip">ApoB RMSE <span>11.8 mg/dL</span> [11.1–12.6]</div>
     <div class="v-chip">R² <span>0.805</span></div>
     <div class="v-chip">Bias <span>−0.01 mg/dL</span></div>
     <div class="v-chip">n=928 (2 cohorts)</div>`;
 
-  // Show results
+  document.getElementById('methods-note').innerHTML = t('methods.note');
+
   document.getElementById('empty-state').style.display = 'none';
   document.getElementById('results').classList.add('visible');
   document.getElementById('methods-card').style.display = 'block';
-});
+}
 
-// Live input highlighting
+document.getElementById('calc-btn').addEventListener('click', () => triggerCalculate(true));
+
 document.querySelectorAll('input[type="number"]').forEach(el => {
   el.addEventListener('input', () => {
     el.classList.toggle('has-value', el.value !== '');
@@ -917,10 +1119,12 @@ document.querySelectorAll('input[type="number"]').forEach(el => {
   });
 });
 
-// Enter key triggers calculate
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('calc-btn').click();
+  if (e.key === 'Enter') triggerCalculate(true);
 });
+
+// Init with Spanish
+applyTranslations();
 </script>
 </body>
 </html>
